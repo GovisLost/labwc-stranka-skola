@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labwc | Architektura a wlroots</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <span class="logo">Labwc</span>
+        <input type="checkbox" id="menu-control">
+        <label for="menu-control" class="hamburgiiir">☰</label>
+        <nav>
+            <ul class="j">
+                <li><a href="index.html">Úvod a vize</a></li>
+                <li><a href="architektura.html">Architektura</a></li>
+                <li><a href="konfigurace.html">Konfigurace</a></li>
+                <li><a href="ekosystem.html">Ekosystém</a></li>
+                <li><a href="analyza.html">Analýza výkonu</a></li>
+                <li><a href="nasazeni.html">Nasazení</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="brd flex-row">
+        <div class="text-info">
+            <h1>Architektura a Jádro systému</h1>
+            <p><strong>Cíl kapitoly:</strong> Popsat nízkoúrovňové fungování Waylandu a rozebrat abstrakci hardwaru pomocí knihovny wlroots.</p>
+            <p>Zatímco u X11 existoval samostatný X Server (který komunikoval s hardwarem) a na něj napojený Window Manager, ve světě Waylandu tyto dvě role splývají do jednoho programu zvaného <strong>Kompozitor (Compositor)</strong>. Labwc je právě takovým kompozitorem. Bere přímo události z klávesnice a myši, zpracovává je, odesílá aplikacím a následně přijímá od aplikací hotové grafické buffery, které skládá na obrazovku.</p>
+        </div>
+        <div class="obrazek">
+            <img src="img/architektura.jpg" alt="Server a abstrakce">
+        </div>
+        </div>
+        <div class="brd">
+            <div class="text-info">
+                <h3>Technologické vrstvy kompozitoru</h3>
+                <dl>
+                    <dt><h4>Knihovna wlroots</h4></dt>
+                    <dd>Napsat kompozitor od nuly je extrémně složité. Proto Labwc využívá knihovnu <strong>wlroots</strong> (původně vyvinutou pro Sway). Wlroots poskytuje desítky tisíc řádků kódu pro abstrakci různých grafických karet, správu paměti a obsluhu vstupních zařízení. Labwc tak působí "pouze" jako logická vrstva nad tímto masivním základem.</dd>
+                    
+                    <dt><h4>Zpracování událostí (libinput)</h4></dt>
+                    <dd>Vstupy (klávesy, pohyby myši, dotyky na touchpadu) jsou obstarávány skrze standardní linuxovou knihovnu <code>libinput</code>. Labwc přijme událost (např. pohyb myši o 5 pixelů vlevo), přepočítá ji přes svou interní mapu obrazovek a rozhodne, na které okno kurzor ukazuje. Výsledkem je extrémně rychlá odezva bez zbytečných prostředníků.</dd>
+                    
+                    <dt><h4>Vykreslovací backendy (DRM, KMS, OpenGL)</h4></dt>
+                    <dd>Pro samotné zobrazení na monitoru Labwc komunikuje s jádrem Linuxu pomocí DRM (Direct Rendering Manager) a KMS (Kernel Mode Setting). O hardwarovou akceleraci samotného vykreslování oken a jejich stínů či vrstvení (compositing) se stará OpenGL nebo Vulkan prostřednictvím knihovny Mesa.</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; Vítek Lešák 2025 | Ročníková práce
+    </footer>
+</body>
+</html>

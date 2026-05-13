@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labwc | Konfigurace</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <span class="logo">Labwc</span>
+        <input type="checkbox" id="menu-control">
+        <label for="menu-control" class="hamburgiiir">☰</label>
+        <nav>
+            <ul class="j">
+                <li><a href="index.html">Úvod a vize</a></li>
+                <li><a href="architektura.html">Architektura</a></li>
+                <li><a href="konfigurace.html">Konfigurace</a></li>
+                <li><a href="ekosystem.html">Ekosystém</a></li>
+                <li><a href="analyza.html">Analýza výkonu</a></li>
+                <li><a href="nasazeni.html">Nasazení</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="brd">
+            <h1>Konfigurace a přizpůsobení</h1>
+            <p><strong>Cíl kapitoly:</strong> Přiblížit způsob nastavení kompozitoru, který plně vychází z osvědčeného formátu legendárního Openboxu, a popsat strukturu konfiguračních souborů.</p>
+            <p>Jednou z největších předností Labwc je jeho zpětná kompatibilita s konfiguračními soubory Openboxu (X11). Uživatelé tak nemusí složitě studovat nové syntaxe nebo skriptovací jazyky. Veškeré nastavení se provádí pomocí jednoduchých a přehledných textových souborů, které se typicky nacházejí ve složce <code>~/.config/labwc/</code>.</p>
+        </div>
+
+        <div class="brd flex-row">
+            <div class="text-info">
+                <h3>Hlavní konfigurační soubory</h3>
+                <dl>
+                    <dt><h4>rc.xml</h4></dt>
+                    <dd>Toto je srdce celého nastavení. XML soubor definuje chování oken, klávesové zkratky (keybinds), akce myši, virtuální plochy a pravidla pro specifické aplikace (např. aby se terminál spouštěl vždy bez rámečku okna).</dd>
+                    
+                    <dt><h4>autostart</h4></dt>
+                    <dd>Jednoduchý bash skript, který se provede při spuštění Labwc. Slouží k nastartování nezbytných součástí prostředí, jako je horní panel, vykreslení tapety na pozadí, správce notifikací nebo applety (např. NetworkManager).</dd>
+                    
+                    <dt><h4>environment</h4></dt>
+                    <dd>Soubor pro definici systémových proměnných prostředí (Environment Variables) specifických pro Wayland relaci. Nastavují se zde například proměnné vynucující běh aplikací ve Wayland režimu namísto přes XWayland (např. <code>MOZ_ENABLE_WAYLAND=1</code>).</dd>
+
+                    <dt><h4>menu.xml</h4></dt>
+                    <dd>Definuje strukturu kontextového menu, které se tradičně objeví po kliknutí pravým tlačítkem myši na prázdnou plochu. Umožňuje rychlé spouštění aplikací a provádění systémových akcí.</dd>
+                </dl>
+                <h3>Témata a vzhled</h3>
+                <p>Labwc plně podporuje formát témat z Openboxu (<code>.obt</code> nebo složky s formátem XBM). Vzhled záhlaví oken, tlačítek a rámečků lze jednoduše stáhnout z komunitních fór (např. Box-Look) a aplikovat bez jakýchkoliv úprav.</p>
+            </div>
+            <div class="obrazek">
+                <img src="img/rc.xml.png" alt="Ukázka syntaxe mého rc.xml">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+         &copy; Vítek Lešák 2026 | Ročníková práce
+    </footer>
+</body>
+</html>
