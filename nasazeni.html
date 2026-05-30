@@ -7,61 +7,71 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <span class="logo">Labwc</span>
-        <input type="checkbox" id="menu-control">
-        <label for="menu-control" class="hamburgiiir">☰</label>
-        <nav>
-            <ul class="j">
-                <li><a href="index.html">Úvod a vize</a></li>
-                <li><a href="architektura.html">Architektura</a></li>
-                <li><a href="konfigurace.html">Konfigurace</a></li>
-                <li><a href="ekosystem.html">Ekosystém</a></li>
-                <li><a href="analyza.html">Analýza výkonu</a></li>
-                <li><a href="nasazeni.html">Nasazení</a></li>
-            </ul>
-        </nav>
+    <header class="header-container">
+        <div class="header-content">
+            <input type="checkbox" id="menu-toggle" class="menu-toggle">
+            <span class="logo">Labwc</span>
+            <label for="menu-toggle" class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <nav class="navigation">
+                <ul class="nav-links">
+                    <li><a href="uvodavize.html">Úvod a vize</a></li>
+                    <li><a href="architektura.html">Architektura</a></li>
+                    <li><a href="konfigurace.html">Konfigurace</a></li>
+                    <li><a href="ekosystem.html">Ekosystém</a></li>
+                    <li><a href="analyza.html">Analýza výkonu</a></li>
+                    <li><a href="nasazeni.html">Nasazení</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <div class="container">
-        <div class="brd flex-row">
-            <div class="text-info">
-                <h1>Instalace a spuštění</h1>
-                <p><strong>Cíl kapitoly:</strong> Popsat proces instalace z repozitářů běžných linuxových distribucí a možnosti startu grafické relace.</p>
-                <p>Labwc je moderní software s aktivním vývojem, který se v posledních dvou letech stal standardní součástí oficiálních repozitářů mnoha linuxových distribucí. Jeho kompilace a instalace je tak zpravidla otázkou jednoho příkazu.</p>
-            </div>
-            <div class="obrazek">
-                <img src="img/install.png" alt="Instalace labwc v terminálu">
-            </div>
+    <article class="content-grid">
+        <div class="text-info">
+            <h1>Praktické Nasazení, Instalace a Správa Zpětné Kompatibility</h1>
+            <p><strong>Cíl kapitoly:</strong> Popsat praktický postup nasazení Labwc v různých linuxových distribucích, vysvětlit metody inicializace relace a rozebrat fungování emulační vrstvy XWayland pro starší aplikace.</p>
+            
+            <p>Přechod z experimentální fáze do produkčního nasazení vyžaduje, aby byl software stabilní, bezpečný a snadno šiřitelný. Labwc v současnosti splňuje nejpřísnější kritéria a stal se pevnou součástí oficiálních softwarových repozitářů hlavních linuxových distribucí. Nasazení prostředí tak nevyžaduje složitou manuální kompilaci, ale je plně automatizováno skrze nativní správce balíčků.</p>
         </div>
-
-        <div class="brd">
-            <div class="text-info">
-                <h3>Správci balíčků</h3>
-                <p>Pro instalaci v oblíbených distribucích stačí použít základního správce balíčků. Například:</p>
-                <ul>
-                    <li><strong>Arch Linux:</strong> <code>sudo pacman -S labwc</code> (K dispozici v oficiálním extra repozitáři)</li>
-                    <li><strong>Debian/Ubuntu:</strong> <code>sudo apt install labwc</code> (Ve stabilních repozitářích u novějších verzí)</li>
-                    <li><strong>Fedora:</strong> <code>sudo dnf install labwc</code></li>
-                </ul>
-
-                <h3>Metody spuštění (Start relace)</h3>
-                <dl>
-                    <dt><h4>Spuštění z TTY (příkazové řádky)</h4></dt>
-                    <dd>Nejčistší a nejjednodušší metodou je přihlášení do textové konzole (TTY) a zadání příkazu <code>labwc</code>. Tento přístup nevyžaduje žádného správce přihlášení a šetří další systémové prostředky.</dd>
-                    
-                    <dt><h4>Správci přihlášení (Display Managers)</h4></dt>
-                    <dd>Většina uživatelů preferuje grafickou přihlašovací obrazovku. Pro Wayland prostředí se jako nejlepší a nejlehčí varianta jeví <strong>greetd</strong> s uživatelským rozhraním (greeterem) jako <em>tuigreet</em> nebo <em>gtkgreet</em>. Po instalaci balíčku Labwc se automaticky vytvoří soubor v <code>/usr/share/wayland-sessions/labwc.desktop</code>, díky kterému jej např. i SDDM nebo GDM automaticky detekuje a nabídne v rozevíracím menu na zamykací obrazovce.</dd>
-                </dl>
+        <div>
+            <h3>Správa balíčků a instalace napříč distribucemi</h3>
+            <p>Pro úspěšnou implementaci Labwc do operačního systému využíváme standardní repozitáře. Níže jsou uvedeny exaktní instalační procedury pro vybrané distribuce:</p>
+            <ul>
+                <div class="grid">
+                    <li><strong>Arch Linux:</strong> <code>sudo pacman -S labwc</code><br>Balíček je distribuován v oficiálním repozitáři [extra]. Pacman automaticky vyřeší závislosti na knihovnách wlroots, libinput a Mesa. Výhodou Arch Linuxu je rolling-release model, který uživateli garantuje okamžitý přístup k nejnovějším upstream opravám.</li>
+                    <li><strong>Debian / Ubuntu GNU Linux:</strong> <code>sudo apt install labwc</code><br>V distribuci Debian (od verze 12 Bookworm) a Ubuntu je balíček plně integrován. U stabilních serverových nasazení s konzervativním cyklem aktualizací se v případě požadavku na nejnovější funkce doporučuje sestavení ze zdrojových kódů pomocí nástroje `meson` a kompilátoru `gcc`.</li>
+                    <li><strong>Fedora Linux:</strong> <code>sudo dnf install labwc</code><br>Fedora, jakožto technologický inovátor prosazující Wayland jako výchozí standard, nabízí vysoce optimalizovaný balíček Labwc včetně nativní integrace systémových politik pro bezpečné spouštění aplikací.</li>
+                </div>
+            </ul>
+        </div>
+        <div class="text-info">
+            <h3>Metodika inicializace grafické relace (Session Management)</h3>
+            <p>Spuštění a inicializace prostředí Labwc může být realizována dvěma diametrálně odlišnými přístupy, podle požadavků na zabezpečení a komfort:</p>
+            <dl>
+                <dt><h4>1. Deterministický start z čisté textové konzole (TTY)</h4></dt>
+                <dd>Z hlediska bezpečnosti a minimalizace napadnutelného povrchu (attack surface) je nejvhodnější metodou přímé přihlášení uživatele do textového rozhraní (Linux Console / TTY1). Po úspěšné autentizaci uživatel manuálně nebo skrze inicializační skript (např. `.bash_profile`) exekvuje příkaz <code>labwc</code>. Tím dojde k přímému spuštění kompozitoru bez nutnosti provozovat mezivrstvu v podobě správce přihlášení. Tento přístup šetří systémové prostředky a eliminuje rizika spojená s chybami v grafických přihlašovacích manažerech.</dd>
                 
-                <h3>Podpora starších aplikací (XWayland)</h3>
-                <p>Vzhledem k tomu, že ještě ne všechny aplikace podporují nativní běh na Waylandu (často se to týká některých her nebo proprietárního softwaru), doporučuje se při instalaci přidat i balíček <strong>XWayland</strong>. Ten běží transparentně na pozadí jako samostatný X11 server uvnitř Labwc a umožňuje bezproblémové vykreslování starších programů.</p>
-            </div>
+                <dt><h4>2. Integrace se správci přihlášení (Display Managers)</h4></dt>
+                <dd>Pro běžné pracovní stanice je standardem grafické přihlášení. Pro minimalistická prostředí se doporučuje nasazení lehkého démona **greetd** v kombinaci s textově-grafickým rozhraním **tuigreet**. Při instalaci Labwc automaticky vygeneruje soubor specifikace relace <code>/usr/share/wayland-sessions/labwc.desktop</code>, který odpovídá XDG standardům. Díky tomu dokáží Labwc automaticky detekovat i robustní správci přihlášení jako **SDDM** (KDE) nebo **GDM** (GNOME) a nabídnout ho uživateli v grafickém menu zamykací obrazovky.</dd>
+            </dl>
+            
+            <h3>Řešení zpětné kompatibility: Architektura XWayland</h3>
+            <p>Přestože je Wayland dominantní technologií budoucnosti, IT průmysl se nachází v dlouhém přechodném období. Existuje masivní množství staršího softwaru, proprietárních podnikových aplikací nebo her na platformě Steam, které komunikují výhradně přes starý protokol X11 a o existenci Waylandu nemají povědomí. Pokud by kompozitor nepodporoval tyto aplikace, jeho reálné nasazení v praxi by bylo nemožné.</p>
+            
+            <p>Labwc tento problém řeší transparentní integrací emulační vrstvy **XWayland**. XWayland funguje jako proxy server běžící na pozadí. Když uživatel spustí starou X11 aplikaci, XWayland uvnitř grafické relace vytvoří skrytý, izolovaný X Server. Aplikace s ním komunikuje tak, jak je zvyklá. XWayland následně zachytí okenní buffery této aplikace, provede jejich konverzi a předá je jádru Labwc jako standardní Wayland povrchy (*wl_surface*). Uživatel tak může spouštět starý i nový software současně vedle sebe na jedné obrazovce bez jakéhokoliv poklesu výkonu či narušení stability.</p>
         </div>
-    </div>
+        
+        <div>
+            <h3>Informace o balíčku labwc v pacman repositářích:</h3>
+            <img src="img/install.png" alt="Ukázka instalace a spuštění Labwc relace z terminálu">
+        </div>
+    </article>
 
     <footer>
-        &copy; Vítek Lešák 2026 | Ročníková práce
+        &copy; Vítek Lešák 2026 | Ročníková práce z informačních technologií
     </footer>
 </body>
 </html>

@@ -7,52 +7,65 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header>
-        <span class="logo">Labwc</span>
-        <input type="checkbox" id="menu-control">
-        <label for="menu-control" class="hamburgiiir">☰</label>
-        <nav>
-            <ul class="j">
-                <li><a href="index.html">Úvod a vize</a></li>
-                <li><a href="architektura.html">Architektura</a></li>
-                <li><a href="konfigurace.html">Konfigurace</a></li>
-                <li><a href="ekosystem.html">Ekosystém</a></li>
-                <li><a href="analyza.html">Analýza výkonu</a></li>
-                <li><a href="nasazeni.html">Nasazení</a></li>
-            </ul>
-        </nav>
+    <header class="header-container">
+        <div class="header-content">
+            <input type="checkbox" id="menu-toggle" class="menu-toggle">
+            <span class="logo">Labwc</span>
+            <label for="menu-toggle" class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <nav class="navigation">
+                <ul class="nav-links">
+                    <li><a href="uvodavize.html">Úvod a vize</a></li>
+                    <li><a href="architektura.html">Architektura</a></li>
+                    <li><a href="konfigurace.html">Konfigurace</a></li>
+                    <li><a href="ekosystem.html">Ekosystém</a></li>
+                    <li><a href="analyza.html">Analýza výkonu</a></li>
+                    <li><a href="nasazeni.html">Nasazení</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <div class="container">
-        <div class="brd flex-row">
+    <article class="container-fluid">
+    <div class="grid">
         <div class="text-info">
-            <h1>Architektura a Jádro systému</h1>
-            <p><strong>Cíl kapitoly:</strong> Popsat nízkoúrovňové fungování Waylandu a rozebrat abstrakci hardwaru pomocí knihovny wlroots.</p>
-            <p>Zatímco u X11 existoval samostatný X Server (který komunikoval s hardwarem) a na něj napojený Window Manager, ve světě Waylandu tyto dvě role splývají do jednoho programu zvaného <strong>Kompozitor (Compositor)</strong>. Labwc je právě takovým kompozitorem. Bere přímo události z klávesnice a myši, zpracovává je, odesílá aplikacím a následně přijímá od aplikací hotové grafické buffery, které skládá na obrazovku.</p>
+            <h1>Nízkoúrovňová Architektura a Jádro Grafického Subsystému</h1>
+            <p><strong>Cíl kapitoly:</strong> Detailně analyzovat architektonický posun od modelu X11 k Waylandu a rozebrat interní mechanizmy knihovny wlroots, subsystémů linuxového jádra a zpracování asynchronních událostí.</p>
+            
+            <p>Abychom porozuměli fungování Labwc, musíme nejprve provést dekonstrukci starého modelu <strong>X11</strong>. V prostředí Xorg fungoval centrální <em>X Server</em> jako prostředník. Pokud klientská aplikace (např. terminál) chtěla vykreslit okno, musela poslat požadavek X Serveru. X Server následně kontaktoval externí <em>Window Manager</em> (Openbox), aby schválil pozici okna. Window Manager poslal odpověď zpět X Serveru, ten kontaktoval <em>Compositor</em> (Picom) pro aplikování stínů a teprve poté byl obraz odeslán na grafickou kartu. Tento neustálý přenos dat mezi procesy (IPC) způsoboval drastické latence, asynchronní anomálie a znemožňoval absolutní kontrolu nad vykreslovací smyčkou.</p>
+            
+            <p><strong>Wayland tento nepřehledný řetězec kompletně eliminuje.</strong> V architektuře Waylandu splývají role X Serveru, správce oken a kompozitoru do jediné monolitické komponenty – **Kompozitoru**. Labwc je tímto koncovým bodem. Komunikace probíhá přímo mezi klientskou aplikací a Labwc skrze unixové sockety pomocí sdílené paměti (shm) nebo instancí `EGLStream` / `Wayland-EGL`. Klientská aplikace si sama vykreslí svůj grafický obsah do sdíleného bufferu v paměti a pouze pošle Labwc zprávu: <em>"Zde je můj nový snímek, zařaď ho do kompozice."</em> Labwc buffer převezme, aplikuje okenní dekorace a pošle data přímo na výstup.</p>
         </div>
-        <div class="obrazek">
-            <img src="img/architektura.jpg" alt="Server a abstrakce">
-        </div>
-        </div>
-        <div class="brd">
-            <div class="text-info">
-                <h3>Technologické vrstvy kompozitoru</h3>
-                <dl>
-                    <dt><h4>Knihovna wlroots</h4></dt>
-                    <dd>Napsat kompozitor od nuly je extrémně složité. Proto Labwc využívá knihovnu <strong>wlroots</strong> (původně vyvinutou pro Sway). Wlroots poskytuje desítky tisíc řádků kódu pro abstrakci různých grafických karet, správu paměti a obsluhu vstupních zařízení. Labwc tak působí "pouze" jako logická vrstva nad tímto masivním základem.</dd>
-                    
-                    <dt><h4>Zpracování událostí (libinput)</h4></dt>
-                    <dd>Vstupy (klávesy, pohyby myši, dotyky na touchpadu) jsou obstarávány skrze standardní linuxovou knihovnu <code>libinput</code>. Labwc přijme událost (např. pohyb myši o 5 pixelů vlevo), přepočítá ji přes svou interní mapu obrazovek a rozhodne, na které okno kurzor ukazuje. Výsledkem je extrémně rychlá odezva bez zbytečných prostředníků.</dd>
-                    
-                    <dt><h4>Vykreslovací backendy (DRM, KMS, OpenGL)</h4></dt>
-                    <dd>Pro samotné zobrazení na monitoru Labwc komunikuje s jádrem Linuxu pomocí DRM (Direct Rendering Manager) a KMS (Kernel Mode Setting). O hardwarovou akceleraci samotného vykreslování oken a jejich stínů či vrstvení (compositing) se stará OpenGL nebo Vulkan prostřednictvím knihovny Mesa.</dd>
-                </dl>
+            <div>
+                <img class="container" src="img/architektura.png" alt="Schéma Wayland architektury a vazby wlroots na Linux Kernel">
             </div>
         </div>
-    </div>
+        <div class="text-info">
+            <h3>Detailní rozbor technologických vrstev:</h3>
+                <dl>
+                <div class="grid">
+                <div>
+                    <dt><h4>1. Knihovna wlroots (Hardwarová abstrakce a správa protokolů)</h4></dt>
+                    <dd>Implementace kompletního Wayland kompozitoru od nuly vyžaduje obrovské množství nízkoúrovňového kódu pro obsluhu grafických ovladačů a správu stavů paměti. Labwc tento problém řeší integrací modulární knihovny <strong>wlroots</strong>. Wlroots nefunguje jako rigidní desktopový framework, ale spíše jako sada jednoúčelových programovacích nástrojů (C knihovna). Implementuje standardní Wayland protokoly (jako je `xdg-shell` pro správu aplikačních oken, `wlr-layer-shell` pro panely a tapety) a poskytuje stabilní API pro správu ploch, transformací a textur. Labwc definuje logiku, jak se mají okna chovat, zatímco wlroots provádí těžkou práci na úrovni komunikace s ovladači Mesa.</dd>
+                </div>
+                <div>    
+                    <dt><h4>2. Subsystém libinput (Zpracování a multiplexování vstupních událostí)</h4></dt>
+                    <dd>Sběr a interpretace hardwarových vstupů (stisky kláves, souřadnice myši, multitouch gesta z touchpadů) jsou realizovány skrze kernelový subsystém evdev zapouzdřený do knihovny <code>libinput</code>. Labwc otevírá soubory zařízení v `/dev/input/` s využitím privilegovaného démona (případně skrze `seatd` pro správu relací). Když uživatel vygeneruje událost, libinput provede filtraci šumu, aplikuje akceleraci kurzoru a předá událost Labwc. Kompozitor v reálném čase propočítá prostorovou geometrii a zjistí, které okno (povrch - *wl_surface*) se nachází na daných souřadnicích. Událost je následně serializována a odeslána konkrétnímu klientskému procesu přes Wayland protokol.</dd>
+                </div>
+                <div>    
+                    <dt><h4>3. Kernelové backendy DRM (Direct Rendering Manager) a KMS (Kernel Mode Setting)</h4></dt>
+                    <dd>Pro přímý zápis na grafický výstup bez mezivrstev využívá Labwc moderní linuxová rozhraní jádra. <strong>DRM</strong> umožňuje kompozitoru alokovat buffery přímo ve VRAM grafické karty (pomocí mechanismu `GBM` - Generic Buffer Management). <strong>KMS</strong> má na starosti konfiguraci hardwaru – nastavení rozlišení, obnovovací frekvence a barevné hloubky monitoru. Samotné skládání obrazu (blitting textur oken na finální scénu) probíhá hardwarově akcelerovaně přes **OpenGL ES 2.0 / 3.0** nebo **Vulkan** prostřednictvím open-source ovladačů projektu <strong>Mesa</strong>. CPU je v tomto procesu téměř stoprocentně uvolněno, veškeré operace provádí GPU v reálném čase.</dd>
+                </div>
+                </div>
+                </dl>
+            </div>
+    </article>
 
     <footer>
-        &copy; Vítek Lešák 2025 | Ročníková práce
+        &copy; Vítek Lešák 2026 | Ročníková práce z informačních technologií
     </footer>
 </body>
 </html>
